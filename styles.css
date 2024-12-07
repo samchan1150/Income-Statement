@@ -111,3 +111,10 @@ thead th {
     background-color: #e0e0e0;
     text-align: center;
 }
+
+/* Add styles for the chart canvas */
+#incomePieChart {
+    max-width: 500px;
+    margin: 20px auto;
+    display: block;
+}

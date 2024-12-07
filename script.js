@@ -75,6 +75,9 @@ function initializeIncomeStatementPage() {
     const statementForm = document.getElementById('statement-form');
     const incomeStatementDiv = document.getElementById('income-statement');
 
+    // Declare a local variable for the Chart instance
+    let incomePieChartInstance;
+
     statementForm.addEventListener('submit', function(event) {
         event.preventDefault();
         generateIncomeStatement();
@@ -206,6 +209,19 @@ function initializeIncomeStatementPage() {
                 </tr>
             </table>
         `;
+        
+        // Prepare data for the pie chart
+        const chartData = {
+            labels: ['Total Revenue', 'Total Expenses'],
+            datasets: [{
+                data: [totalRevenue, Math.abs(totalExpense)],
+                backgroundColor: ['#4CAF50', '#F44336'], // Customize colors
+            }],
+        };
+
+        // Render the pie chart
+        renderPieChart(chartData);
+        
     }
 
     function getEntriesWithinPeriod(startDate, endDate) {
@@ -219,6 +235,28 @@ function initializeIncomeStatementPage() {
 
     function formatDate(date) {
         return date.toISOString().split('T')[0];
+    }
+
+    function renderPieChart(chartData) {
+        const ctx = document.getElementById('incomePieChart').getContext('2d');
+    
+        // Destroy existing chart instance if it exists to avoid duplication
+        if (incomePieChartInstance) {
+            incomePieChartInstance.destroy();
+        }
+    
+        // Create a new pie chart
+        window.incomePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: chartData,
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Income vs. Expenses',
+                },
+            },
+        });
     }
 }
 
