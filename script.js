@@ -99,29 +99,61 @@ function initializeIncomeStatementPage() {
     
         const entries = getEntriesWithinPeriod(startDate, endDate);
     
-        // Separate entries into revenues and expenses
-        const revenues = entries.filter(entry => entry.amount > 0);
-        const expenses = entries.filter(entry => entry.amount < 0);
+        // Group entries by description and type (revenue or expense)
+        const revenueMap = {};
+        const expenseMap = {};
+    
+        entries.forEach(entry => {
+            const description = entry.description.trim();
+            const amount = entry.amount;
+    
+            if (amount > 0) {
+                // Revenue
+                if (revenueMap[description]) {
+                    revenueMap[description] += amount;
+                } else {
+                    revenueMap[description] = amount;
+                }
+            } else if (amount < 0) {
+                // Expense
+                if (expenseMap[description]) {
+                    expenseMap[description] += amount;
+                } else {
+                    expenseMap[description] = amount;
+                }
+            }
+        });
+    
+        // Convert maps to arrays
+        const revenues = Object.keys(revenueMap).map(description => ({
+            description,
+            amount: revenueMap[description],
+        }));
+    
+        const expenses = Object.keys(expenseMap).map(description => ({
+            description,
+            amount: expenseMap[description],
+        }));
     
         // Calculate totals
-        const totalRevenue = revenues.reduce((sum, entry) => sum + entry.amount, 0);
-        const totalExpense = expenses.reduce((sum, entry) => sum + entry.amount, 0); // Negative value
+        const totalRevenue = revenues.reduce((sum, item) => sum + item.amount, 0);
+        const totalExpense = expenses.reduce((sum, item) => sum + item.amount, 0); // Negative values
     
         const netIncome = totalRevenue + totalExpense; // totalExpense is negative
     
         // Generate HTML for revenue items
-        const revenueItemsHtml = revenues.map(entry => `
+        const revenueItemsHtml = revenues.map(item => `
             <tr>
-                <td>${entry.description}</td>
-                <td>$${entry.amount.toFixed(2)}</td>
+                <td>${item.description}</td>
+                <td>$${item.amount.toFixed(2)}</td>
             </tr>
         `).join('');
     
         // Generate HTML for expense items
-        const expenseItemsHtml = expenses.map(entry => `
+        const expenseItemsHtml = expenses.map(item => `
             <tr>
-                <td>${entry.description}</td>
-                <td>$${Math.abs(entry.amount).toFixed(2)}</td>
+                <td>${item.description}</td>
+                <td>$${Math.abs(item.amount).toFixed(2)}</td>
             </tr>
         `).join('');
     
@@ -189,3 +221,4 @@ function initializeIncomeStatementPage() {
         return date.toISOString().split('T')[0];
     }
 }
+
