@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Income Statement</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Income Statement Generator</h1>
+    <form id="statement-form">
+        <div class="form-group">
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" required>
+        </div>
+        <div class="form-group">
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" required>
+        </div>
+        <button type="submit">Generate Income Statement</button>
+    </form>
+
+    <div id="income-statement">
+        <!-- Income statement will be generated here -->
+    </div>
+
+    <a href="index.html" class="button-link">Back to Entries</a>
+    <script src="script.js"></script>
+</body>
+</html>
